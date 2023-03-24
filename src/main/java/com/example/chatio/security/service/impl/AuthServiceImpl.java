@@ -1,5 +1,6 @@
 package com.example.chatio.security.service.impl;
 
+import com.example.chatio.security.exception.UserAlreadyExistsException;
 import com.example.chatio.security.model.SecurityUser;
 import com.example.chatio.security.model.dto.AuthDto;
 import com.example.chatio.security.repository.SecurityUserRepository;
@@ -20,7 +21,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void signup(AuthDto authDto) {
         if (usernameExists(authDto.getUsername())){
-            return;
+            throw new UserAlreadyExistsException("User '" + authDto.getUsername() + "' already exists.");
         }
 
         SecurityUser user = new SecurityUser(authDto.getUsername(), authDto.getPassword());
