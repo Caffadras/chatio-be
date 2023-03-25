@@ -2,7 +2,6 @@ package com.example.chatio.security.service;
 
 import com.example.chatio.security.model.SecurityUser;
 import com.example.chatio.security.repository.SecurityUserRepository;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,9 +18,4 @@ public class SecurityUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User '" + username + "' is not found."));
     }
 
-    @PostConstruct
-    public void loadDefault(){
-        SecurityUser user = new SecurityUser(1L, "blah", "bloh");
-        securityUserRepository.save(user);
-    }
 }
