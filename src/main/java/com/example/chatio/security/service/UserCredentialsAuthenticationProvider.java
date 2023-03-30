@@ -1,6 +1,6 @@
 package com.example.chatio.security.service;
 
-import com.example.chatio.security.model.SecurityUser;
+import com.example.chatio.security.model.UserCredentials;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -15,7 +15,7 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class UserCredentialsAuthenticationProvider implements AuthenticationProvider {
 
-    private final SecurityUserDetailsService userDetailsService;
+    private final UserCredentialsDetailsService userDetailsService;
 
 
     @Override
@@ -23,8 +23,8 @@ public class UserCredentialsAuthenticationProvider implements AuthenticationProv
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
 
-        SecurityUser user = userDetailsService.loadUserByUsername(username);
-        if (!user.getPassword().equals(password)){
+        UserCredentials credentials = userDetailsService.loadUserByUsername(username);
+        if (!credentials.getPassword().equals(password)){
             throw  new BadCredentialsException("Invalid username or password.");
         }
 

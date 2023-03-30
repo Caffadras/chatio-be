@@ -19,6 +19,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
+
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
@@ -45,14 +47,15 @@ public class SecurityConfig {
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
+                .httpBasic()
+                .and()
                 .authorizeHttpRequests(auth -> auth
                         .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                         .requestMatchers(HttpMethod.POST, "/sign-up", "/sign-in").permitAll()
-                        .requestMatchers("/h2-console").permitAll()
+                        .requestMatchers(toH2Console()).permitAll()
                         .anyRequest().authenticated())
-                .headers(headers -> headers.frameOptions().sameOrigin())
-                .httpBasic()
-                .and()
+                .headers(headers -> headers.frameOptions().disable())
+
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

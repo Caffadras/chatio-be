@@ -2,8 +2,8 @@ package com.example.chatio.security.filter;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.example.chatio.security.exception.JwtClaimExtractionException;
-import com.example.chatio.security.model.SecurityUser;
-import com.example.chatio.security.service.SecurityUserDetailsService;
+import com.example.chatio.security.model.UserCredentials;
+import com.example.chatio.security.service.UserCredentialsDetailsService;
 import com.example.chatio.security.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -26,7 +26,7 @@ import java.util.Objects;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
-    private final SecurityUserDetailsService userDetailsService;
+    private final UserCredentialsDetailsService userDetailsService;
 
     private static final String SIGN_IN_ENDPOINT = "/sign-in";
 
@@ -41,12 +41,12 @@ public class JwtFilter extends OncePerRequestFilter {
         }
         try{
             String username = jwtUtil.extractUsername(token);
-            SecurityUser user = userDetailsService.loadUserByUsername(username);
+            UserCredentials credentials = userDetailsService.loadUserByUsername(username);
             SecurityContextHolder.getContext().setAuthentication(
-                    new UsernamePasswordAuthenticationToken(user.getUsername(), null, Collections.emptyList())
+                    new UsernamePasswordAuthenticationToken(credentials.getUsername(), null, Collections.emptyList())
             );
         } catch (JWTVerificationException | JwtClaimExtractionException | UsernameNotFoundException ignored){
-
+            //Cannot authenticate due to invalid jwt token or invalid credentials
         }
         filterChain.doFilter(request, response);
     }

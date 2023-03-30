@@ -1,4 +1,4 @@
-CREATE TABLE security_user
+CREATE TABLE user_credentials
 (
     id bigserial PRIMARY KEY,
     username varchar(255),

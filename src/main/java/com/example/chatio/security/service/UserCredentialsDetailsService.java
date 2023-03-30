@@ -1,7 +1,7 @@
 package com.example.chatio.security.service;
 
-import com.example.chatio.security.model.SecurityUser;
-import com.example.chatio.security.repository.SecurityUserRepository;
+import com.example.chatio.security.model.UserCredentials;
+import com.example.chatio.security.repository.UserCredentialsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -9,12 +9,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class SecurityUserDetailsService implements UserDetailsService {
+public class UserCredentialsDetailsService implements UserDetailsService {
 
-    private final SecurityUserRepository securityUserRepository;
+    private final UserCredentialsRepository userCredentialsRepository;
     @Override
-    public SecurityUser loadUserByUsername(String username) throws UsernameNotFoundException {
-        return securityUserRepository.findByUsername(username)
+    public UserCredentials loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userCredentialsRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User '" + username + "' is not found."));
     }
 

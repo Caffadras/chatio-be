@@ -1,9 +1,6 @@
 package com.example.chatio.security.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,11 +11,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 
 @Entity
+@Table(name = "user_credentials")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class SecurityUser implements UserDetails {
+public class UserCredentials implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,7 +25,7 @@ public class SecurityUser implements UserDetails {
     private String password;
 
 
-    public SecurityUser(String username, String password) {
+    public UserCredentials(String username, String password) {
         this.username = username;
         this.password = password;
     }

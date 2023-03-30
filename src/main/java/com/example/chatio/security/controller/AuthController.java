@@ -1,6 +1,6 @@
 package com.example.chatio.security.controller;
 
-import com.example.chatio.security.model.dto.AuthDto;
+import com.example.chatio.security.model.dto.SignInDto;
 import com.example.chatio.security.model.dto.SignUpDto;
 import com.example.chatio.security.model.dto.TokenDto;
 import com.example.chatio.security.service.AuthService;
@@ -25,8 +25,8 @@ public class AuthController {
     }
 
     @PostMapping("/sign-in")
-    public ResponseEntity<TokenDto> signIn(@RequestBody AuthDto authDto){
-        String token = authService.signIn(authDto);
+    public ResponseEntity<TokenDto> signIn(@RequestBody SignInDto signInDto){
+        String token = authService.signIn(signInDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(new TokenDto(token));
     }

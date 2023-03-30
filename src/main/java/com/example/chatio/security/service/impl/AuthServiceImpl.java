@@ -1,11 +1,13 @@
 package com.example.chatio.security.service.impl;
 
+import com.example.chatio.model.UserProfile;
+import com.example.chatio.repository.UserProfileRepository;
 import com.example.chatio.security.exception.InvalidCredentialsException;
 import com.example.chatio.security.exception.UserAlreadyExistsException;
-import com.example.chatio.security.model.SecurityUser;
-import com.example.chatio.security.model.dto.AuthDto;
+import com.example.chatio.security.model.UserCredentials;
+import com.example.chatio.security.model.dto.SignInDto;
 import com.example.chatio.security.model.dto.SignUpDto;
-import com.example.chatio.security.repository.SecurityUserRepository;
+import com.example.chatio.security.repository.UserCredentialsRepository;
 import com.example.chatio.security.service.AuthService;
 import com.example.chatio.security.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +22,8 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserDetailsService userDetailsService;
     private final JwtUtil jwtUtil;
-    private final SecurityUserRepository userRepository;
+    private final UserCredentialsRepository userCredentialsRepository;
+    private final UserProfileRepository userProfileRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -30,19 +33,29 @@ public class AuthServiceImpl implements AuthService {
         }
 
         String password = passwordEncoder.encode(signUpDto.getPassword());
-        SecurityUser user = new SecurityUser(signUpDto.getUsername(), password);
-        userRepository.save(user);
-        return jwtUtil.generateToken(user.getUsername());
+        UserCredentials credentials = new UserCredentials(signUpDto.getUsername(), password);
+
+        UserProfile userProfile = UserProfile.builder()
+                .firstName(signUpDto.getFirstName())
+                .lastName(signUpDto.getLastName())
+                .credentials(credentials)
+                .build();
+
+
+        userCredentialsRepository.save(credentials);
+        userProfileRepository.save(userProfile);
+
+        return jwtUtil.generateToken(credentials.getUsername());
     }
 
     @Override
-    public String signIn(AuthDto authDto) {
+    public String signIn(SignInDto signInDto) {
         try{
-            SecurityUser user = (SecurityUser) userDetailsService.loadUserByUsername(authDto.getUsername());
-            if (!passwordEncoder.matches(authDto.getPassword(), user.getPassword())){
+            UserCredentials credentials = (UserCredentials) userDetailsService.loadUserByUsername(signInDto.getUsername());
+            if (!passwordEncoder.matches(signInDto.getPassword(), credentials.getPassword())){
                 throw new InvalidCredentialsException("Username or password is invalid.");
             }
-            return jwtUtil.generateToken(user.getUsername());
+            return jwtUtil.generateToken(credentials.getUsername());
         } catch (UsernameNotFoundException e){
             throw new InvalidCredentialsException("Username or password is invalid.");
         }
