@@ -47,7 +47,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests(auth -> auth
                         .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
-                        .requestMatchers(HttpMethod.POST, "/signup", "/sign-in").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/sign-up", "/sign-in").permitAll()
                         .requestMatchers("/h2-console").permitAll()
                         .anyRequest().authenticated())
                 .headers(headers -> headers.frameOptions().sameOrigin())

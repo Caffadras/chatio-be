@@ -4,6 +4,7 @@ import com.example.chatio.security.exception.InvalidCredentialsException;
 import com.example.chatio.security.exception.UserAlreadyExistsException;
 import com.example.chatio.security.model.SecurityUser;
 import com.example.chatio.security.model.dto.AuthDto;
+import com.example.chatio.security.model.dto.SignUpDto;
 import com.example.chatio.security.repository.SecurityUserRepository;
 import com.example.chatio.security.service.AuthService;
 import com.example.chatio.security.util.JwtUtil;
@@ -23,13 +24,13 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public String signup(AuthDto authDto) {
-        if (usernameExists(authDto.getUsername())){
-            throw new UserAlreadyExistsException("User '" + authDto.getUsername() + "' already exists.");
+    public String signUp(SignUpDto signUpDto) {
+        if (usernameExists(signUpDto.getUsername())){
+            throw new UserAlreadyExistsException("User '" + signUpDto.getUsername() + "' already exists.");
         }
 
-        String password = passwordEncoder.encode(authDto.getPassword());
-        SecurityUser user = new SecurityUser(authDto.getUsername(), password);
+        String password = passwordEncoder.encode(signUpDto.getPassword());
+        SecurityUser user = new SecurityUser(signUpDto.getUsername(), password);
         userRepository.save(user);
         return jwtUtil.generateToken(user.getUsername());
     }
