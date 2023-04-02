@@ -28,9 +28,10 @@ public class JwtUtil {
         secret = Base64.encodeBase64String(secret.getBytes());
     }
 
-    public String generateToken(String username){
+    public String generateToken(String username, Long userId){
         return JWT.create()
                 .withClaim("username", username)
+                .withClaim("userId", userId)
                 .withIssuer("chatio-be")
                 .withIssuedAt(new Date())
                 .withExpiresAt(new Date(new Date().getTime() + expirationMs))

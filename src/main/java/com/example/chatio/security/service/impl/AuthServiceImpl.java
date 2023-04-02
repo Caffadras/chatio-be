@@ -11,6 +11,7 @@ import com.example.chatio.security.repository.UserCredentialsRepository;
 import com.example.chatio.security.service.AuthService;
 import com.example.chatio.security.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,6 +37,7 @@ public class AuthServiceImpl implements AuthService {
         UserCredentials credentials = new UserCredentials(signUpDto.getUsername(), password);
 
         UserProfile userProfile = UserProfile.builder()
+                .username(signUpDto.getUsername())
                 .firstName(signUpDto.getFirstName())
                 .lastName(signUpDto.getLastName())
                 .credentials(credentials)
@@ -45,7 +47,7 @@ public class AuthServiceImpl implements AuthService {
         userCredentialsRepository.save(credentials);
         userProfileRepository.save(userProfile);
 
-        return jwtUtil.generateToken(credentials.getUsername());
+        return jwtUtil.generateToken(credentials.getUsername(), userProfile.getId());
     }
 
     @Override
@@ -55,10 +57,18 @@ public class AuthServiceImpl implements AuthService {
             if (!passwordEncoder.matches(signInDto.getPassword(), credentials.getPassword())){
                 throw new InvalidCredentialsException("Username or password is invalid.");
             }
-            return jwtUtil.generateToken(credentials.getUsername());
+            UserProfile userProfile = userProfileRepository.findByUsername(credentials.getUsername()).orElseThrow();
+            return jwtUtil.generateToken(credentials.getUsername(), userProfile.getId());
         } catch (UsernameNotFoundException e){
             throw new InvalidCredentialsException("Username or password is invalid.");
         }
+    }
+
+    @Override
+    public UserProfile getCurrentUser() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return  userProfileRepository.findByUsername(username).orElseThrow();
+
     }
 
 

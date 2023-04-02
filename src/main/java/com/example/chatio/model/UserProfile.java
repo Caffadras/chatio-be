@@ -1,6 +1,7 @@
 package com.example.chatio.model;
 
 import com.example.chatio.security.model.UserCredentials;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,6 +18,9 @@ public class UserProfile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "username")
+    private String username;
+
     @Column(name = "first_name")
     private String firstName;
 
@@ -24,5 +28,6 @@ public class UserProfile {
     private String lastName;
 
     @OneToOne
+    @JsonIgnore
     private UserCredentials credentials;
 }
