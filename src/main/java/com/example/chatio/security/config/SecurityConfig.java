@@ -52,6 +52,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                         .requestMatchers(HttpMethod.POST, "/sign-up", "/sign-in").permitAll()
+                        .requestMatchers("/greeting").permitAll()
                         .requestMatchers(toH2Console()).permitAll()
                         .anyRequest().authenticated())
                 .headers(headers -> headers.frameOptions().disable())
