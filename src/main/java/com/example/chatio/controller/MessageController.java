@@ -1,7 +1,9 @@
 package com.example.chatio.controller;
 
 import com.example.chatio.model.Message;
+import com.example.chatio.model.MessageType;
 import com.example.chatio.model.UserProfile;
+import com.example.chatio.model.dto.MessageDto;
 import com.example.chatio.security.service.AuthService;
 import com.example.chatio.service.MessageService;
 import lombok.RequiredArgsConstructor;
@@ -18,16 +20,17 @@ public class MessageController {
     private final MessageService messageService;
     private final AuthService authService;
 
+
     @MessageMapping("/chat.send")
     @SendTo("/topic")
-    public Message receivedMessage(String message){
-        System.out.println("Received message: " + message);
+    public Message receivedMessage(MessageDto messageDto){
         UserProfile userProfile = authService.getCurrentUser();
 
         Message responseMessage = Message.builder()
-                .contents(message)
+                .contents(messageDto.getContents())
                 .timestamp(LocalDateTime.now())
                 .sender(userProfile)
+                .messageType(MessageType.CHAT)
                 .build();
 
         messageService.saveMessage(responseMessage);

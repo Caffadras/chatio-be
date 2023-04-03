@@ -26,4 +26,8 @@ public class Message {
 
     private LocalDateTime timestamp;
 
+    @Column(name = "message_type")
+    @Enumerated(EnumType.STRING)
+    private MessageType messageType;
+
 }
