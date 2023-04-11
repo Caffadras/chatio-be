@@ -10,6 +10,7 @@ import com.example.chatio.security.model.dto.SignUpDto;
 import com.example.chatio.security.repository.UserCredentialsRepository;
 import com.example.chatio.security.service.AuthService;
 import com.example.chatio.security.util.JwtUtil;
+import com.example.chatio.service.ChatService;
 import com.example.chatio.service.MessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,6 +29,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserProfileRepository userProfileRepository;
     private final PasswordEncoder passwordEncoder;
     private final MessageService messageService;
+    private final ChatService chatService;
 
     @Override
     public String signUp(SignUpDto signUpDto) {
@@ -49,6 +51,7 @@ public class AuthServiceImpl implements AuthService {
         userCredentialsRepository.save(credentials);
         userProfileRepository.save(userProfile);
         messageService.sendNewRegistrationMessage(userProfile);
+        chatService.registerNewMember();
         return jwtUtil.generateToken(credentials.getUsername(), userProfile.getId());
     }
 

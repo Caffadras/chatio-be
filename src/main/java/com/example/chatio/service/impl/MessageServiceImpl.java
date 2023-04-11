@@ -10,6 +10,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +22,11 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public void saveMessage(Message message) {
         messageRepository.save(message);
+    }
+
+    @Override
+    public List<Message> findAllMessages() {
+        return messageRepository.findAll();
     }
 
     @Override

@@ -1,0 +1,1 @@
+INSERT INTO chat (chat_id, chat_name, members_count) VALUES (1, 'Test chat', 0);
